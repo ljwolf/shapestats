@@ -44,7 +44,7 @@ def minimum_bounding_circle(points):
             return circles[lexmax]
         i+=1
 
-def mbc_animation(points, plotname=False):
+def _mbc_animation(points, plotname=False):
     """
     Implements Skyum (1990)'s algorithm for the minimum bounding circle in R^2. 
 
@@ -169,7 +169,7 @@ if __name__ == '__main__':
 
     ptset = [pt for part in chain.parts for pt in part]
 
-    mbc_animation(ptset, plotname='test')
+    _mbc_animation(ptset, plotname='test')
     st = time.time()
     minimum_bounding_circle(ptset)
     elapsed = time.time() - st

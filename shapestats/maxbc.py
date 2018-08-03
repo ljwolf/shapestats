@@ -5,6 +5,19 @@ from pysal.cg import get_segment_point_dist as dist_to_ls
 import numpy as np
 
 def maximum_contained_circle(points):
+    """
+    Computes the largest circle possible to fit within a point cloud, 
+    such that no point is contained within the circle. 
+
+    Parameters
+    ----------
+    points  :   numpy.ndarray (n,2)
+                array containing n rows of 2-dimensional coordinates
+
+    Returns
+    -------
+    (center, radius) defining the minimum circle
+    """
     boundary = Polygon(points)
     voronoi = Voronoi(points)
     within = [boundary.contains_point(pt) for pt in voronoi.vertices]
