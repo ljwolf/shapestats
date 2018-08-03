@@ -45,7 +45,7 @@ def ipq(poly):
 
     pp = (a_d) / (a_c) = (a_d) / ((p_d / (2*\pi))^2 * \pi) = (a_d) / (p_d**2 / (4\PI))
     """
-    return (4 * _PI * poly.area) / (poly.perimeter**2)
+    return (4 * _PI * poly.area) / (poly.boundary.length**2)
 
 def convex_hull(poly):
     """
@@ -61,7 +61,7 @@ def boundary_amplitude(poly):
     ratio of the convex hull perimeter to the perimeter of the shape itself
     """
     chull = to_shapely_geom(poly).convex_hull
-    return chull.perimeter/poly.perimeter
+    return chull.boundary.length/poly.boundary.length
 
 def iaq(poly):
     """
@@ -70,7 +70,7 @@ def iaq(poly):
 
     Altman's PA_3 measure, and proportional to the PA_4 measure 
     """
-    return (2 * _PI * np.sqrt(poly.area/_PI)) / poly.perimeter
+    return (2 * _PI * np.sqrt(poly.area/_PI)) / poly.boundary.length
 
 def reock(poly):
     """
@@ -97,7 +97,7 @@ def moa_ratio(poly):
     Computes the ratio of the second moment of area (like Li et al (2013)) to
     the moment of area of a circle with the same area. 
     """
-    r = poly.perimeter / (2 * _PI)
+    r = poly.boundary.length / (2 * _PI)
     return (_PI * .5 * r**4) / second_moa(poly)
 
 ## ---- Altman's OS Measures ---- ##
