@@ -1,13 +1,13 @@
 from scipy.spatial import Voronoi
-from scipy.spatial import distance as d
 from pysal.cg import Polygon, LineSegment
 from pysal.cg import get_segment_point_dist as dist_to_ls
 import numpy as np
 
+
 def maximum_contained_circle(points):
     """
-    Computes the largest circle possible to fit within a point cloud, 
-    such that no point is contained within the circle. 
+    Computes the largest circle possible to fit within a point cloud,
+    such that no point is contained within the circle.
 
     Parameters
     ----------
@@ -22,11 +22,11 @@ def maximum_contained_circle(points):
     voronoi = Voronoi(points)
     within = [boundary.contains_point(pt) for pt in voronoi.vertices]
     ivoronoi = voronoi.vertices[within]
-   
+
     # Unfortunately, pysal.cg.get_polygon_point_dist returns 0 for points
     # internal to the polygon. So, we have to consider each line segment forming
     # the boundary independently from the polygon itself. It'd be nice if we
-    # could modify that behavior conditionally. 
+    # could modify that behavior conditionally.
     linesegs  = [LineSegment(boundary.parts[0][i], boundary.parts[0][i+1])
                  for i in range(len(boundary.parts[0])-1)]
     

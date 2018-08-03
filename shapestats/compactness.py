@@ -1,6 +1,7 @@
 from __future__ import division
 from math import pi as _PI
-from pysal import cg as _cg
+from libpysal.weights._contW_lists import _get_verts as _get_pointset
+from shapely.geometry import asShape as to_shapely_geom
 from scipy.spatial import distance as _dst
 import numpy as np
 
@@ -8,16 +9,16 @@ from . import _util as _u
 from .minbc import minimum_bounding_circle as _mbc
 from ._amoments import second_moa
 
-__all__ = ['ipq','iaq','convex_hull','reock', 'nmi', 'moa_ratio',
+__all__ = ['ipq','iaq','convex_hull', 'boundary_amplitude', 'reock', 'nmi', 'moa_ratio',
            'moment_of_inertia', 'flaherty_crumplin_radius','taylor_reflexive',
            'flaherty_crumplin_lw','eig_seitzinger', 
            'polsby_popper', 'schwartzberg']
 
 ### ---- Altman's PA/A measures ---- ##
 
-def ipq(chain):
+def ipq(poly):
     """
-    The Isoperimetric quotient, defined as the ratio of a chain's area to the 
+    The Isoperimetric quotient, defined as the ratio of a poly's area to the 
     area of the equi-perimeter circle. 
 
     Altman's PA_1 measure
@@ -44,28 +45,34 @@ def ipq(chain):
 
     pp = (a_d) / (a_c) = (a_d) / ((p_d / (2*\pi))^2 * \pi) = (a_d) / (p_d**2 / (4\PI))
     """
-    return (4 * _PI * chain.area) / (chain.perimeter**2)
+    return (4 * _PI * poly.area) / (poly.perimeter**2)
 
-def convex_hull(chain):
+def convex_hull(poly):
     """
     ratio of the convex hull area to the area of the shape itself
 
     Altman's A_3 measure, from Neimi et al 1991. 
     """
-    pointset = [point for part in chain.parts for point in part] 
-    chull = _cg.Polygon(_cg.convex_hull(pointset))
-    return chain.area / chull.area
+    chull = to_shapely_geom(poly).convex_hull
+    return poly.area / chull.area
 
-def iaq(chain):
+def boundary_amplitude(poly):
     """
-    The Isoareal quotient, defined as the ratio of a chain's perimeter to the
+    ratio of the convex hull perimeter to the perimeter of the shape itself
+    """
+    chull = to_shapely_geom(poly).convex_hull
+    return chull.perimeter/poly.perimeter
+
+def iaq(poly):
+    """
+    The Isoareal quotient, defined as the ratio of a poly's perimeter to the
     perimeter of the equi-areal circle
 
     Altman's PA_3 measure, and proportional to the PA_4 measure 
     """
-    return (2 * _PI * np.sqrt(chain.area/_PI)) / chain.perimeter
+    return (2 * _PI * np.sqrt(poly.area/_PI)) / poly.perimeter
 
-def reock(chain):
+def reock(poly):
     """
     The Reock compactness measure, defined by the ratio of areas between the
     minimum bounding/containing circle of a shape and the shape itself. 
@@ -73,32 +80,31 @@ def reock(chain):
     Measure A1 in Altman's thesis, cited for Frolov (1974), but earlier from Reock
     (1963)
     """
-    pointset = [pt for part in chain.parts for pt in part]
+    pointset = _get_pointset(poly) 
     radius, (cx, cy) = _mbc(pointset)
-    return chain.area / (_PI * radius ** 2)
+    return poly.area / (_PI * radius ** 2)
 
-def nmi(chain):
+def nmi(poly):
     """
     Computes the Normalized Moment of Inertia from Li et al (2013), recognizing
     that it is the relationship between the area of a shape squared divided by
     its second moment of area. 
     """
-    return chain.area**2 / (2 * second_moa(chain) * _PI)
+    return poly.area**2 / (2 * second_moa(poly) * _PI)
 
-def moa_ratio(chain):
+def moa_ratio(poly):
     """
     Computes the ratio of the second moment of area (like Li et al (2013)) to
     the moment of area of a circle with the same area. 
     """
-    r = chain.perimeter / (2 * _PI)
-    return (_PI * .5 * r**4) / second_moa(chain)
-
+    r = poly.perimeter / (2 * _PI)
+    return (_PI * .5 * r**4) / second_moa(poly)
 
 ## ---- Altman's OS Measures ---- ##
 
-def moment_of_inertia(chain, dmetric=_dst.euclidean):
+def moment_of_inertia(poly, dmetric=_dst.euclidean):
     """
-    Computes the moment of inertia of the chain. 
+    Computes the moment of inertia of the poly. 
 
     This treats each boundary point as a point-mass of 1.
 
@@ -107,28 +113,27 @@ def moment_of_inertia(chain, dmetric=_dst.euclidean):
 
     \sum_i d_{i,c}^2
 
-    where c is the centroid of the chain
+    where c is the centroid of the poly
     
     Altman's OS_1 measure, cited in Boyce and Clark (1964), also used in Weaver
     and Hess (1963).
     """
-    pointset = [pt for part in chain.parts for pt in part]
-    dists = [dmetric(pt, chain.centroid)**2 for pt in pointset]
-    return chain.area / np.sqrt(2 * np.sum(dists))
+    pointset = _get_pointset(poly) 
+    dists = [dmetric(pt, poly.centroid)**2 for pt in pointset]
+    return poly.area / np.sqrt(2 * np.sum(dists))
 
-
-def flaherty_crumplin_radius(chain):
+def flaherty_crumplin_radius(poly):
     """
     The Flaherty & Crumplin (1992) index, OS_3 in Altman's thesis. 
     
     The ratio of the radius of the equi-areal circle to the radius of the MBC
     """
-    pointset = [point for part in chain.parts for point in part[:-1]]
-    r_eac = np.sqrt(chain.area/_PI)
+    pointset = _get_pointset(poly) 
+    r_eac = np.sqrt(poly.area/_PI)
     r_mbc, _ = _mbc(pointset)
     return r_eac / r_mbc
 
-def taylor_reflexive(chain):
+def taylor_reflexive(poly):
     """
     The Taylor reflexive angle index, measure OS_4 in Altman's Thesis
 
@@ -136,23 +141,23 @@ def taylor_reflexive(chain):
     reflexive angles in a polygon, divided by the number of angles in the
     polygon in general.
     """
-    angles = _u.get_all_angles(chain)
+    angles = _u.get_all_angles(poly)
     R = np.sum((np.array(A) >= 0).sum() for A in angles) #again ^^^
     return (N - R)/(N+R)
 
 ## ---- Altman's Length-Width Measures ---- ##
 
-def flaherty_crumplin_lw(chain):
+def flaherty_crumplin_lw(poly):
     """
     The Flaherty & Crumplin (1992) length-width measure, stated as measure LW_7
     in Altman's thesis. 
 
     It is given as the ratio between the minimum and maximum shape diameter. 
     """
-    _, minlen, _, maxlen = _u.unique_lw(chain)
+    _, minlen, _, maxlen = _u.unique_lw(poly)
     return minlen / maxlen
 
-def eig_seitzinger(chain):
+def eig_seitzinger(poly):
     """
     The Eig & Seitzinger (1981) shape measure, defined as:
 
@@ -163,7 +168,7 @@ def eig_seitzinger(chain):
 
     Defined as measure LW_5 in Altman's thesis
     """
-    ptset = [pt for part in chain.parts for pt in part]
+    ptset = _get_pointset(poly) 
     xs, ys = [p[0] for p in ptset], [p[1] for p in ptset]
     l = np.max(xs) - np.min(xs)
     w = np.max(ys) - np.min(ys)
@@ -171,14 +176,14 @@ def eig_seitzinger(chain):
 
 ## ---- Alternative Names ---- ##
 
-def polsby_popper(chain):
+def polsby_popper(poly):
     """
     Alternative name for the Isoperimetric Quotient
     """
-    return ipq(chain)
+    return ipq(poly)
 
-def schwartzberg(chain):
+def schwartzberg(poly):
     """
     Alterantive name for the Isoareal Quotient
     """
-    return iaq(chain)
+    return iaq(poly)
