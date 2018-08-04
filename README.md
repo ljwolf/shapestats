@@ -8,7 +8,7 @@ These include:
 - reflex angle measures
 - maximum contained circle
 - minimum bounding circles using Skyum's algorithm:
-![minimum bounding circle computation]()
+![minimum bounding circle computation](https://raw.githubusercontent.com/ljwolf/shapestats/master/_img/minbc.gif)
 
 # dependencies
 shapely, geopandas, scipy, libpysal
