@@ -1,6 +1,17 @@
 # Shapestats
 
-This is a basic library to compute shape statistics about polygons.
+This is a basic library to compute shape statistics about polygons. 
+These include:
+- isoperimetric quotients (aka the Polsby-Popper measure)
+- Convex Hull area/perimeter measures
+- length/width ratios
+- reflex angle measures
+- maximum contained circle
+- minimum bounding circles using Skyum's algorithm:
+![minimum bounding circle computation]()
+
+# dependencies
+shapely, geopandas, scipy, libpysal
 
 # License
 Copyright 2018 Levi John Wolf

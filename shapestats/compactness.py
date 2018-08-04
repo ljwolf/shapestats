@@ -141,8 +141,13 @@ def taylor_reflexive(poly):
     reflexive angles in a polygon, divided by the number of angles in the
     polygon in general.
     """
-    angles = _u.get_all_angles(poly)
-    R = np.sum((np.array(A) >= 0).sum() for A in angles) #again ^^^
+    angles = _u.all_angles(poly)
+    R = 0
+    N = 0
+    for A in angles:
+        ri =  (np.array(A) >= 0).sum()
+        R += ri 
+        N += len(A) - R
     return (N - R)/(N+R)
 
 ## ---- Altman's Length-Width Measures ---- ##

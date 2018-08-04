@@ -1,13 +1,12 @@
 from math import pi as PI
 from scipy.spatial import ConvexHull
-from pysal.cg import get_angle_between, Ray, is_clockwise
+from libpysal.cg import get_angle_between, Ray, is_clockwise
 import copy 
 import numpy as np
 import scipy.spatial.distance as dist
 from warnings import warn as Warn
 from itertools import cycle
 import decimal as dec
-from warnings import warn as Warn
 
 not_clockwise = lambda x: not is_clockwise(x)
 
@@ -22,8 +21,10 @@ def minimum_bounding_circle(points):
     2a. If angle(prec(p), p, succ(p)) <= 90 degrees, then finish. 
     2b. If not, remove p from set. 
     """
-    points = [points[i] for i in ConvexHull(points).vertices]
-    points.reverse() #shift from ccw to cw
+    chull = ConvexHull(points)
+    points = np.asarray(points)[chull.vertices]
+    points = points[::-1] #shift from ccw to cw
+    points = list(map(tuple, points))
     POINTS = copy.deepcopy(points)
     removed = []
     i=0
@@ -44,7 +45,7 @@ def minimum_bounding_circle(points):
             return circles[lexmax]
         i+=1
 
-def _mbc_animation(points, plotname=False):
+def _mbc_animation(points, plotname=False, buffer_=.2):
     """
     Implements Skyum (1990)'s algorithm for the minimum bounding circle in R^2. 
 
@@ -63,8 +64,15 @@ def _mbc_animation(points, plotname=False):
             os.makedirs('./'+str(plotname))
         ORIGINAL_POINTS = points
         
-    points = [points[i] for i in ConvexHull(points).vertices]
-    points.reverse() #shift from ccw to cw
+    chull = ConvexHull(points)
+    points = np.asarray(points)[chull.vertices]
+    points = points[::-1] #shift from ccw to cw
+    minx,miny = points.min(axis=0)
+    maxx,maxy = points.max(axis=0)
+    width, height = np.abs(minx-maxx), np.abs(miny-maxy)
+    left, bottom = minx - width*buffer_, miny - height*buffer_
+    right, top = maxx + width*buffer_, maxy + height*buffer_
+    points = list(map(tuple, points))
     POINTS = copy.deepcopy(points)
     removed = []
     i=0
@@ -82,22 +90,28 @@ def _mbc_animation(points, plotname=False):
         if plotname:
             sb.set_context('talk')
             fig = plt.figure(figsize=(10,10))
-            plt.plot([p[0] for p in POINTS], [p[-1] for p in POINTS], 'r')
-            plt.plot([p[0] for p in ORIGINAL_POINTS], 
-                     [p[-1] for p in ORIGINAL_POINTS], 'r--')
-            plt.plot([p[0] for p in points], [p[-1] for p in points], 'b--')
-            plt.plot([c[0] for c in candidate], [c[1] for c in candidate], 'bo')
-            fig.gca().add_artist(plt.Circle(circles[lexmax][-1], radii[lexmax], fc='w'))
+            ax = plt.gca()
+            ax.set_aspect('equal')
+            ax.plot([p[0] for p in POINTS], [p[-1] for p in POINTS], 'r')
+            ax.plot([p[0] for p in ORIGINAL_POINTS], 
+                    [p[-1] for p in ORIGINAL_POINTS], 'r--')
+            ax.plot([p[0] for p in points], [p[-1] for p in points], 'b--')
+            ax.plot([c[0] for c in candidate], [c[1] for c in candidate], 'bo')
+            circ = plt.Circle(circles[lexmax][-1], radii[lexmax], 
+                              fc='w', ec='k')
+            ax.add_artist(circ)
+            ax.set_xlim(left, right)
+            ax.set_ylim(bottom, top)
             if angles[lexmax] > PI/2:
-                plt.title('FAILURE')
-                plt.xlabel('iteration: {}'.format(i))
+                ax.set_title('FAILURE')
+                ax.set_xlabel('iteration: {}'.format(i))
                 removed = points.pop(lexmax-1)
-                plt.plot(removed[0], removed[1], 'kx')
+                ax.plot(removed[0], removed[1], 'kx')
                 plt.savefig(str(plotname)+'/'+str(i))
                 plt.close()
             else:
-                plt.title('SUCCESS!')
-                plt.xlabel('iteration: {}'.format(i))
+                ax.set_title('SUCCESS!')
+                ax.set_xlabel('iteration: {}'.format(i))
                 plt.savefig(str(plotname)+'/'+str(i))
                 plt.close()
                 return circles[lexmax]
@@ -112,6 +126,7 @@ def _angle(p,q,r):
     """
     compute the positive angle formed by PQR
     """
+    p,q,r = list(map(tuple, (p,q,r)))
     return np.abs(get_angle_between(Ray(q,p),Ray(q,r)))
 
 def _nples(l, n=3):
@@ -161,16 +176,13 @@ def _circle(A,B,C, dmetric=dist.euclidean):
 
 if __name__ == '__main__':
     import pysal as ps
-    import time
+    from libpysal.weights._contW_lists import _get_verts as _get_pointset
+    import geopandas
 
-    df = ps.pdio.read_files(ps.examples.get_path('columbus.shp'))
+    df = geopandas.read_file(ps.examples.get_path('columbus.shp'))
+    ix = np.random.randint(0,len(df.geometry))
+    #ix = 5
+    ptset = _get_pointset(df.geometry[ix])
 
-    chain = df['geometry'][2]
-
-    ptset = [pt for part in chain.parts for pt in part]
-
-    _mbc_animation(ptset, plotname='test')
-    st = time.time()
-    minimum_bounding_circle(ptset)
-    elapsed = time.time() - st
-    print('took {} s'.format(elapsed))
+    _mbc_animation(ptset, plotname='test', buffer_=.66)
+    print(ix)

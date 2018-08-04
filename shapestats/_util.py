@@ -1,4 +1,4 @@
-import pysal.cg as cg
+import libpysal.cg as cg
 import scipy.spatial.distance as d
 import numpy as np
 
@@ -6,6 +6,7 @@ def all_angles(chain):
     """
     Construct all angles for all parts of a polygon 
     """
+    chain = cg.shapes.asShape(chain)
     parts = []
     for part in chain.parts:
         angles = []
@@ -33,7 +34,7 @@ def pairwise_lw(chain):
     
     Thus, you need to be careful with automated unpacking.
     """
-    ptset = [pt for part in chain.parts for pt in part]
+    ptset = _get_pointset(chain)
     pwds = d.pdist(ptset)
     sqf = d.squareform(pwds)
     minval = pwds[np.nonzero(pwds)].min() #have to account for zero selfdist
