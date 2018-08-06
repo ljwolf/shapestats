@@ -1,6 +1,7 @@
 import libpysal.cg as cg
 import scipy.spatial.distance as d
 import numpy as np
+from libpysal.weights._contW_lists import _get_verts as _get_pointset
 
 def all_angles(chain):
     """
