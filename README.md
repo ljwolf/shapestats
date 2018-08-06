@@ -1,5 +1,6 @@
 # Shapestats
 [![Build Status](https://travis-ci.org/ljwolf/shapestats.svg?branch=master)](https://travis-ci.org/ljwolf/shapestats)
+[![DOI](https://zenodo.org/badge/143476127.svg)](https://zenodo.org/badge/latestdoi/143476127)
 
 This is a basic library to compute shape statistics about polygons. 
 These include:
