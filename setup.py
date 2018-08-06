@@ -5,10 +5,6 @@ from distutils.command.build_py import build_py
 
 from shapestats import __version__
 
-pth = os.path.dirname(os.path.abspath(__file__))+ '/requirements.txt'
-
-REQUIREMENTS = [i.strip() for i in open(pth).readlines()]
-
 
 setup(name='shapestats', # name of package
       version=__version__,
@@ -31,6 +27,6 @@ setup(name='shapestats', # name of package
         ],
       license='MIT',
       packages=['shapestats'], # add your package name here as a string
-      install_requires=REQUIREMENTS,
+      install_requires=['scipy','shapely','libpysal']
       zip_safe=False,
       cmdclass = {'build.py':build_py})
