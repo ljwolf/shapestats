@@ -60,7 +60,8 @@ def convex_hull(poly):
 
 def boundary_amplitude(poly):
     """
-    ratio of the convex hull perimeter to the perimeter of the shape itself
+    The boundary amplitude is the ratio of the perimeter of a shape's
+    convex hull to the perimeter of the shape itself
     """
     chull = to_shapely_geom(poly).convex_hull
     return chull.boundary.length/poly.boundary.length
