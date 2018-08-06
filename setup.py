@@ -3,11 +3,15 @@ import os.path
 
 from distutils.command.build_py import build_py
 
-from shapestats import __version__
+
+initpath = os.path.join(os.path.dirname(__file__), 'shapestats/__init__.py')
+with open('shapestats/__init__.py') as f:
+    version = f.readline().split('=')[1].strip()
+print(version)
 
 
 setup(name='shapestats', # name of package
-      version=__version__,
+      version=version,
       description='tools & methods to measure shape regularity', #short <80chr description
       url='https://github.com/ljwolf/shapestats', #github repo
       maintainer='Levi John Wolf',

@@ -21,7 +21,7 @@ install:
   - conda install --yes pip
   - conda install --yes -c conda-forge geopandas
   - conda install --yes -c conda-forge scipy
-  - pip install -r libpysal
+  - pip install libpysal
 
 script:
   - python setup.py sdist >/dev/null
