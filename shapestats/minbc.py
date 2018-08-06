@@ -183,11 +183,11 @@ def _circle(A,B,C, dmetric=dist.euclidean):
     return radii, (center_x, center_y)
 
 if __name__ == '__main__':
-    import pysal as ps
+    import libpysal 
     from libpysal.weights._contW_lists import _get_verts as _get_pointset
     import geopandas
 
-    df = geopandas.read_file(ps.examples.get_path('columbus.shp'))
+    df = geopandas.read_file(libpysal.examples.get_path('columbus.shp'))
     ix = np.random.randint(0,len(df.geometry))
     #ix = 5
     ptset = _get_pointset(df.geometry[ix])

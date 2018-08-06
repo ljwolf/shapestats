@@ -1,6 +1,6 @@
 from scipy.spatial import Voronoi
-from pysal.cg import Polygon, LineSegment
-from pysal.cg import get_segment_point_dist as dist_to_ls
+from libpysal.cg import Polygon, LineSegment
+from libpysal.cg import get_segment_point_dist as dist_to_ls
 from .compactness import _get_pointset
 import numpy as np
 
