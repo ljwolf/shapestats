@@ -11,7 +11,7 @@ print(version)
 
 
 setup(name='shapestats', # name of package
-      version=version,
+      version=eval(version),
       description='tools & methods to measure shape regularity', #short <80chr description
       url='https://github.com/ljwolf/shapestats', #github repo
       maintainer='Levi John Wolf',
