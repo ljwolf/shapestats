@@ -1,0 +1,36 @@
+language: python
+sudo: false
+branches:
+only:
+  - master
+python:
+  - "3.5"
+  - "3.6"
+
+before_install:
+  - wget https://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
+  - chmod +x miniconda.sh
+  - ./miniconda.sh -b -p ./miniconda
+  - export PATH=`pwd`/miniconda/bin:$PATH
+  - conda update --yes conda
+  - conda config --append channels conda-forge
+  - conda create -y -q -n test-env python=$TRAVIS_PYTHON_VERSION
+  - source activate test-env
+
+install:
+  - conda install --yes pip
+  - conda install --yes -c conda-forge geopandas
+  - conda install --yes -c conda-forge scipy
+  - pip install -r libpysal
+
+script:
+  - python setup.py sdist >/dev/null
+  - python setup.py install
+  - nosetests --verbose shapestats
+
+notifications:
+    email:
+        recipients:
+            - levi.john.wolf@gmail.com
+        on_success: change
+        on_failure: change

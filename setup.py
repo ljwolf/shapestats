@@ -27,6 +27,6 @@ setup(name='shapestats', # name of package
         ],
       license='MIT',
       packages=['shapestats'], # add your package name here as a string
-      install_requires=['scipy','shapely','libpysal']
+      install_requires=['scipy','shapely','libpysal'],
       zip_safe=False,
       cmdclass = {'build.py':build_py})
