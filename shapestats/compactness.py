@@ -7,12 +7,14 @@ import numpy as np
 
 from . import _util as _u
 from .minbc import minimum_bounding_circle as _mbc
+from .maxbc import maximum_contained_circle as _mcc
 from ._amoments import second_moa
 
-__all__ = ['ipq','iaq','convex_hull', 'boundary_amplitude', 'reock', 'nmi', 'moa_ratio',
-           'moment_of_inertia', 'flaherty_crumplin_radius','taylor_reflexive',
-           'flaherty_crumplin_lw','eig_seitzinger', 
-           'polsby_popper', 'schwartzberg']
+__all__ = ['ipq', 'iaq', 'convex_hull', 'boundary_amplitude', 'reock',
+           'nmi', 'moa_ratio', 'contained_circle_aq',
+           'moment_of_inertia', 'flaherty_crumplin_radius',
+           'taylor_reflexive', 'flaherty_crumplin_lw',
+           'eig_seitzinger', 'polsby_popper', 'schwartzberg']
 
 ### ---- Altman's PA/A measures ---- ##
 
@@ -82,6 +84,16 @@ def reock(poly):
     """
     pointset = _get_pointset(poly) 
     radius, (cx, cy) = _mbc(pointset)
+    return poly.area / (_PI * radius ** 2)
+
+def contained_circle_aq(poly):
+    """
+    The contained circle areal quotient is defined by the 
+    ratio of the area of the
+    largest contained circle and the shape itself.
+    """
+    pointset = _get_pointset(poly)
+    radius, (cx, cy) = _mcc(pointset)
     return poly.area / (_PI * radius ** 2)
 
 def nmi(poly):

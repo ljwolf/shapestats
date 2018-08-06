@@ -1,6 +1,7 @@
 from scipy.spatial import Voronoi
 from pysal.cg import Polygon, LineSegment
 from pysal.cg import get_segment_point_dist as dist_to_ls
+from .compactness import _get_pointset
 import numpy as np
 
 
@@ -18,6 +19,9 @@ def maximum_contained_circle(points):
     -------
     (center, radius) defining the minimum circle
     """
+    was_polygon = not isinstance(points, (np.ndarray,list))
+    if was_polygon:
+        points = _get_pointset(points)
     boundary = Polygon(points)
     voronoi = Voronoi(points)
     within = [boundary.contains_point(pt) for pt in voronoi.vertices]
@@ -36,8 +40,11 @@ def maximum_contained_circle(points):
     # The maximal contained circle is centered on a vertex of the voronoi
     # partition that has the largest distance to nearest side. 
     for pt in ivoronoi:
-        closest = np.min([dist_to_ls(ls, pt) for ls in linesegs])
+        closest = np.min([dist_to_ls(ls, pt)[0] for ls in linesegs])
         if closest > radius:
             radius = closest
             center = pt
-    return center, radius
+    if was_polygon:
+        from shapely import geometry
+        return geometry.Point(tuple(center)).buffer(radius)
+    return radius, tuple(center)

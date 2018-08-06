@@ -21,6 +21,10 @@ def minimum_bounding_circle(points):
     2a. If angle(prec(p), p, succ(p)) <= 90 degrees, then finish. 
     2b. If not, remove p from set. 
     """
+    was_polygon = not isinstance(points, (np.ndarray,list))
+    if was_polygon:
+        from .compactness import _get_pointset
+        points = _get_pointset(points)
     chull = ConvexHull(points)
     points = np.asarray(points)[chull.vertices]
     points = points[::-1] #shift from ccw to cw
@@ -42,6 +46,10 @@ def minimum_bounding_circle(points):
         if angles[lexmax] > PI/2:
             removed = points.pop(lexmax-1)
         else:
+            radius, center = circles[lexmax]
+            if was_polygon:
+                from shapely import geometry
+                return geometry.Point(tuple(center)).buffer(radius)
             return circles[lexmax]
         i+=1
 
