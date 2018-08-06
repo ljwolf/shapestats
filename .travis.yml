@@ -18,7 +18,7 @@ before_install:
   - source activate test-env
 
 install:
-  - conda install --yes pip
+  - conda install --yes pip nose
   - conda install --yes -c conda-forge geopandas
   - conda install --yes -c conda-forge scipy
   - pip install libpysal
