@@ -10,6 +10,17 @@ These include:
 - minimum bounding circles using Skyum's algorithm:
 ![minimum bounding circle computation](https://raw.githubusercontent.com/ljwolf/shapestats/master/_img/minbc.gif)
 
+Each of the measures in `compactness` are defined in their docstrings:
+```python
+help(shapestats.boundary_amplitude)
+```
+
+also, you can use the minium bounding circle & minimum contained circle constructors directly on shapely shapes:
+```python
+shapestats.maxbc.maximum_bounding_circle(polygon)
+shapestats.maxbc.minimum_contained_circle(polygon)
+``
+
 # usage
 
 ```python
@@ -21,7 +32,6 @@ df.geometry.apply(shapestats.ipq)
 
 # dependencies
 `shapely`
-`geopandas`
 `scipy`
 `libpysal`
 
