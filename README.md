@@ -20,8 +20,8 @@ help(shapestats.boundary_amplitude)
 also, you can use the minium bounding circle & minimum contained circle constructors directly on shapely shapes:
 
 ```python
-shapestats.maxbc.maximum_bounding_circle(polygon)
-shapestats.maxbc.minimum_contained_circle(polygon)
+shapestats.minbc.minimum_bounding_circle(polygon)
+shapestats.maxbc.maximum_contained_circle(polygon)
 ```
 
 # usage
@@ -34,9 +34,9 @@ df.geometry.apply(shapestats.ipq)
 ```
 
 # dependencies
-`shapely`
-`scipy`
-`libpysal`
+- `shapely`
+- `scipy`
+- `libpysal`
 
 # License
 Copyright 2018 Levi John Wolf
