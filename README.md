@@ -12,7 +12,7 @@ These include:
 - minimum bounding circles using Skyum's algorithm:
 ![minimum bounding circle computation](https://raw.githubusercontent.com/ljwolf/shapestats/master/_img/minbc.gif)
 
-Each of the measures in `compactness` are defined in their docstrings:
+Each measure in `compactness` is defined more fully in its docstring:
 ```python
 help(shapestats.boundary_amplitude)
 ```
