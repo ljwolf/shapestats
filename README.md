@@ -4,7 +4,7 @@
 
 This is a basic library to compute shape statistics about polygons. 
 These include:
-- isoperimetric quotients (aka the Polsby-Popper measure)
+- isometric quotients (such as the isoperimetric or isoareal quotients, sometimes called the Polsby-Popper & Schwartzberg measures)
 - convex hull area/perimeter measures
 - length/width ratios
 - reflex angle measures
@@ -20,8 +20,8 @@ help(shapestats.boundary_amplitude)
 also, you can use the minium bounding circle & minimum contained circle constructors directly on shapely shapes:
 
 ```python
-shapestats.minbc.minimum_bounding_circle(polygon)
-shapestats.maxbc.maximum_contained_circle(polygon)
+shapestats.minimum_bounding_circle(polygon)
+shapestats.maximum_contained_circle(polygon)
 ```
 
 # usage
