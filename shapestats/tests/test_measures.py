@@ -61,5 +61,5 @@ def test_reock():
 
 def test_taylor():
     observed = taylor_reflexive(shape)
-    testing.assert_allclose(observed, -.33333, atol=ATOL)
+    testing.assert_allclose(observed, .25, atol=ATOL)
 

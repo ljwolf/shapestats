@@ -158,9 +158,9 @@ def taylor_reflexive(poly):
     R = 0
     N = 0
     for A in angles:
-        ri =  (np.array(A) >= 0).sum()
-        R += ri 
-        N += len(A) - R
+        ni =  (np.array(A) >= 0).sum()
+        N += ni 
+        R += len(A) - N
     return (N - R)/(N+R)
 
 ## ---- Altman's Length-Width Measures ---- ##

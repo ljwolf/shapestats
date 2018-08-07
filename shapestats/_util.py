@@ -11,7 +11,7 @@ def all_angles(chain):
     parts = []
     for part in chain.parts:
         angles = []
-        for i in range(len(part)):
+        for i in range(1, len(part)):
             R1 = cg.Ray(part[i-1], part[i-2])
             R2 = cg.Ray(part[i-1], part[i])
             angles.append(cg.get_angle_between(R1, R2))
