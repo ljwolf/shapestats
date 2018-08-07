@@ -38,6 +38,18 @@ df.geometry.apply(shapestats.ipq)
 - `scipy`
 - `libpysal`
 
+# citation
+```
+@misc{wolf2018shapestats
+  author = {Levi John Wolf},
+  title  = {ljwolf/shapestats: First Stable Release},
+  month  = aug,
+  year   = 2018,
+  doi    = {10.5281/zenodo.1340708},
+  url    = {https://doi.org/10.5281/zenodo.1340708}
+}
+```
+
 # License
 Copyright 2018 Levi John Wolf
 
