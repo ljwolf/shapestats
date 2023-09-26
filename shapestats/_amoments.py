@@ -3,7 +3,7 @@ from libpysal.cg.shapes import Polygon, asShape
 
 
 def second_moa(chain):
-    """
+    r"""
     Using equation listed on en.wikipedia.org/Second_Moment_of_area, the second
     moment of area is actually the cross-moment of area between the X and Y
     dimensions:
