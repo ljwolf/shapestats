@@ -24,7 +24,7 @@ __all__ = ['ipq', 'iaq', 'convex_hull', 'boundary_amplitude', 'reock',
 ### ---- Altman's PA/A measures ---- ##
 
 def ipq(poly):
-    """
+    r"""
     The Isoperimetric quotient, defined as the ratio of a poly's area to the
     area of the equi-perimeter circle.
 
@@ -121,7 +121,7 @@ def moa_ratio(poly):
 ## ---- Altman's OS Measures ---- ##
 
 def moment_of_inertia(poly, dmetric=_dst.euclidean):
-    """
+    r"""
     Computes the moment of inertia of the poly.
 
     This treats each boundary point as a point-mass of 1.
