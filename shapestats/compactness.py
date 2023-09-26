@@ -1,7 +1,12 @@
 from __future__ import division
 from math import pi as _PI
 from libpysal.weights._contW_lists import _get_verts as _get_pointset
-from shapely.geometry import asShape as to_shapely_geom
+
+try:
+    from shapely.geometry import asShape as to_shapely_geom
+except ImportError:
+    from shapely.geometry import shape as to_shapely_geom
+
 from scipy.spatial import distance as _dst
 import numpy as np
 
