@@ -137,7 +137,12 @@ def moment_of_inertia(poly, dmetric=_dst.euclidean):
     and Hess (1963).
     """
     pointset = _get_pointset(poly)
-    dists = [dmetric(pt, poly.centroid)**2 for pt in pointset]
+    poly.centroid
+    try:
+        dists = [dmetric(pt, poly.centroid)**2 for pt in pointset]
+    except ValueError:
+        centroid_xy = np.array(poly.centroid.xy).T[0]
+        dists = [dmetric(pt, centroid_xy)**2 for pt in pointset]
     return poly.area / np.sqrt(2 * np.sum(dists))
 
 def flaherty_crumplin_radius(poly):
